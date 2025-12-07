@@ -1,241 +1,207 @@
-Winter Garden Legal RAG Backend (MVP Architecture)
+# Winter Garden Legal RAG Backend (MVP Architecture)
 
-A modular, architecture-first backend for a Legal Retrieval-Augmented Generation (RAG) system built over the City of Winter Garden, FL legal code.
-This MVP focuses on clean structure, correct layering, and production-style design, providing a clear blueprint for how a full legal RAG backend is engineered.
+![Python](https://img.shields.io/badge/Python-3.11-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-Framework-green)
+![Status](https://img.shields.io/badge/Status-MVP-orange)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
-It is intentionally implementation-light: components exist as functional scaffolds (API, logging, configuration, module boundaries), ready for incremental extension into a fully operational RAG pipeline.
+A modular, architecture-first backend for a **Legal Retrieval-Augmented Generation (RAG)** system built on the *City of Winter Garden, Florida* legal code.
 
-1. Overview
+This MVP focuses on **correct engineering structure**, **clean subsystem boundaries**, and **production-style organization**, serving as a blueprint for how a real legal RAG backend is built.  
+It is intentionally implementation-light so the architecture can be evaluated safely and clearly.
 
-This backend defines a complete architectural skeleton for a legal RAG system:
+---
 
-A FastAPI service exposing /query, /index, and /health
+## 1. Overview
 
-A modular retrieval subsystem (BM25, FAISS, Hybrid)
+The system defines all essential layers required in a modern RAG backend:
 
-Parsing layer for PDFs and HTML
+- FastAPI service (`/query`, `/index`, `/health`)
+- Modular retrieval subsystem (BM25, FAISS, Hybrid)
+- Parsing layer for PDFs and HTML
+- Configurable LLM client wrapper
+- Grounding & citation validation stubs
+- Structured JSON logging with request tracing
+- Centralized YAML configuration
+- Operational scripts for indexing & data processing
+- API contract tests (using FastAPI TestClient)
 
-LLM client wrapper with multi-provider structure
+This project demonstrates **engineering discipline**, not raw capability:
+clean separation of concerns, explicit interfaces, reproducible scripts, and an extendable design.
 
-Grounding and citation validation stubs
+---
 
-Structured JSON logging with request tracing
+## 2. Current Capabilities (MVP Scope)
 
-External configuration via YAML
+### API
+- `/health` — returns service status  
+- `/query` — accepts natural language queries, returns structured placeholder answers  
+- `/index` — scaffolding for index rebuild workflows  
+- Automatic request ID propagation  
+- Per-request latency tracking  
 
-Operational scripts for index building and data processing
+### Logging
+- Shared JSON structured logger  
+- Fields: `timestamp`, `level`, `message`, `request_id`, `latency`, `query`  
 
-Basic API contract tests
+### Configuration
+- Central `config/config.yaml`  
+- Defines paths, models, retrieval parameters, and API settings  
+- Error-safe loading (`loader.py`)  
 
-The project highlights engineering discipline: separation of concerns, type-safe interfaces, predictable module boundaries, and reproducible operational workflows.
+### Scripts
+- `scripts/build_index.py` — orchestrates ingestion + future embedding/index building  
+- `scripts/reprocess_data.py` — resets processed directory  
 
-2. Current Capabilities
+### Tests
+- API contract tests ensuring:
+  - Endpoint stability  
+  - Header propagation  
+  - Response structure  
 
-This MVP ships with the operational surface and architectural layout of a real RAG service.
-Today it provides:
+---
 
-API
+## 3. Architectural Intent
 
-/health — reports service status
+This MVP establishes the **blueprint** for a full legal RAG pipeline.  
+All subsystems exist in their production form — only logic is missing, by design.
 
-/query — accepts a natural language query, returns structured stub response
+### Retrieval Layer (`retrieval/`)
+- `bm25.py`, `faiss_store.py`, `hybrid.py`  
+- Interfaces defined  
+- Methods stubbed for future:
+  - Sparse BM25 retrieval  
+  - Dense FAISS vector search  
+  - Hybrid ranking/fusion strategies  
 
-/index — triggers index rebuild workflow
+### Parsing Layer (`parsers/`)
+- `pdf_parser.py`, `html_parser.py`  
+- Directory traversal + signatures defined  
+- Extraction & chunking are TODO  
 
-Automatic request IDs via header or UUID
+### LLM Layer (`llm/client.py`)
+- Provider enum (OpenAI, Anthropic, local models)  
+- Unified LLM interface  
+- Stubbed answer + citation generation  
 
-Measured latency per request
+### Validation Layer (`validators/grounding.py`)
+- Grounding interface  
+- Citation check hook  
 
-Logging
+Ready for RAG hallucination prevention once retrieval + LLM integration exist.
 
-JSON-formatted logs
+---
 
-Structured fields: timestamp, level, message, request_id, latency, query
+## 4. Project Structure
 
-Single shared logger across modules
-
-Configuration
-
-Central YAML configuration (config/config.yaml)
-
-Paths, models, retrieval parameters, and API settings
-
-Safe loading and error handling
-
-Execution Scripts
-
-build_index.py — orchestrates ingestion and index initialization
-
-reprocess_data.py — resets processed directory and prepares inputs
-
-run_api.sh — launches the service with optional port configuration
-
-Testing
-
-FastAPI TestClient tests for endpoint correctness and request ID handling
-
-Establishes the contract for future integration tests
-
-3. Architectural Intent
-
-This MVP serves as a blueprint for a full legal RAG system.
-All layers are defined, isolated, and extensible:
-
-Retrieval Layer
-
-Files:
-
-bm25.py
-
-faiss_store.py
-
-hybrid.py
-
-Interfaces and class structures are complete.
-Future work fills in BM25 ranking, vector embeddings, FAISS index building, and hybrid fusion.
-
-Parsing Layer
-
-Files:
-
-pdf_parser.py
-
-html_parser.py
-
-Signatures, configuration parameters, and directory-level traversal are defined.
-Extraction and chunking logic remains to be implemented.
-
-LLM Layer
-
-File: llm/client.py
-
-Includes:
-
-Provider enum
-
-Unified API
-
-Stubs for answer and citation generation
-
-Designed to support OpenAI, Anthropic, and local models.
-
-Validation Layer
-
-File: validators/grounding.py
-
-Defines:
-
-Answer grounding interface
-
-Citation validation hook
-
-Ready for factuality checks once retrieval and LLM integration are in place.
-
-4. Project Structure
-.
+```
 ├── api/                  # FastAPI routes and request models
 ├── config/               # YAML config + loader
 ├── data/                 # Raw PDFs, processed chunks, index placeholders
 ├── llm/                  # LLM client scaffolding
 ├── parsers/              # PDF / HTML parsing skeletons
-├── retrieval/            # BM25, FAISS, Hybrid retrieval interfaces
+├── retrieval/            # BM25, FAISS, Hybrid retrieval scaffolding
 ├── scripts/              # Index build + data processing orchestration
 ├── tests/                # API contract tests
-├── utils/                # Structured JSON logging
-├── validators/           # Grounding and citation validation stubs
-└── run_api.sh            # Service startup script
+├── utils/                # JSON structured logging
+├── validators/           # Grounding / citation validation stubs
+└── run_api.sh            # Startup script
+```
 
+This mirrors real production RAG services where each subsystem evolves independently.
 
-This layout mirrors production RAG systems where each subsystem evolves independently.
+---
 
-5. Installation
+## 5. Installation
 
-Python 3.10+
+Requires **Python 3.10+**.
 
+```bash
 pip install -r requirements.txt
+```
 
-6. Running the API
-Using the startup script:
+---
+
+## 6. Running the API
+
+### Using the startup script
+```bash
 ./run_api.sh 8000
+```
 
-Or with Uvicorn directly:
+### Using Uvicorn directly
+```bash
 uvicorn api.routes:app --reload --host 0.0.0.0 --port 8000
+```
 
-7. Reprocessing and Index Building
-Reprocess documents:
+---
+
+## 7. Reprocessing and Index Building
+
+### Reset processed data
+```bash
 python scripts/reprocess_data.py
+```
 
-Initialize index directory and pipeline:
+### Initialize index structure
+```bash
 python scripts/build_index.py
+```
 
+Both scripts validate configuration & logging pipelines and set up the environment for future
+embedding + retrieval logic.
 
-Both scripts run end-to-end and load configuration/logging correctly, preparing the operational environment for future embedding + indexing logic.
+---
 
-8. Current Status (MVP Scope)
+## 8. Current Status (MVP Reality)
 
-This project is in Phase 1: Architectural Scaffolding.
+This repository is in **Phase 1 — Architectural Scaffolding**.
 
-Operational boundaries, interfaces, folders, scripts, and execution paths are complete.
-The following subsystems intentionally use stub implementations:
+Functional components intentionally remain unimplemented:
 
-Retrieval (retrieve() returns empty lists)
+| Subsystem        | Current Behavior |
+|------------------|------------------|
+| Retrieval        | Returns empty lists |
+| Parsers          | No PDF/HTML extraction |
+| LLM generation   | Returns placeholder strings |
+| Grounding        | Always passes |
+| Index building   | No embeddings or FAISS index |
 
-Parsers (no PDF/HTML extraction yet)
+This design ensures the project is safe for public portfolio use while highlighting real engineering practices.
 
-LLM generation (placeholder strings)
+---
 
-Grounding validation (always passes)
+## 9. Roadmap (Production Path)
 
-Index building (no embeddings or FAISS index written yet)
+### Document ingestion
+- Extract text from PDFs (pdfplumber / PyPDF2)
+- Parse HTML (BeautifulSoup)
+- Implement chunking (size + overlap)
 
-This approach makes the system safe to share publicly, while clearly showcasing the engineering structure of a real RAG backend.
+### Retrieval
+- Generate embeddings (sentence-transformers)
+- Build FAISS index
+- Implement BM25
+- Hybrid fusion (RRF, weighted sum)
 
-9. Roadmap
+### LLM Integration
+- Connect to OpenAI/Anthropic
+- Build RAG prompts
+- Generate answers w/ citations
 
-Next steps for completing a production-grade system:
+### Validation
+- Citation verification  
+- Hallucination detection  
+- Confidence scoring  
 
-Document ingestion
+### Observability + Testing
+- Metrics  
+- Tracing  
+- Integration tests  
+- Stress tests  
 
-Extract PDF text
+---
 
-Parse HTML
-
-Implement chunking with overlap
-
-Retrieval
-
-Generate embeddings
-
-Build FAISS index
-
-Implement BM25 ranking
-
-Add hybrid fusion (RRF, weighted sum)
-
-LLM integration
-
-Connect LLMClient to OpenAI/Anthropic
-
-Build RAG prompt templates
-
-Generate answers with citations
-
-Validation
-
-Grounding checks
-
-Citation verification
-
-Confidence scoring
-
-Testing and Observability
-
-Integration tests
-
-Stress tests
-
-Telemetry and monitoring hooks
-
-10. License
+## 10. License
 
 MIT License
