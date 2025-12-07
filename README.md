@@ -170,7 +170,6 @@ Functional components intentionally remain unimplemented:
 This design ensures the project is safe for public portfolio use while highlighting real engineering practices.
 
 ---
----
 
 ## 9. Roadmap (Production Path)
 
@@ -183,7 +182,7 @@ Below is the planned evolution path for turning this architecture into a fully f
 - Introduce text chunking with size + overlap control
 
 ### Retrieval Layer
-- Generate embeddings with sentence-transformers
+- Generate embeddings using sentence-transformers
 - Build FAISS index for dense retrieval
 - Implement BM25 for sparse retrieval
 - Add hybrid fusion (RRF, weighted / score-based ranking)
@@ -211,15 +210,19 @@ Below is the planned evolution path for turning this architecture into a fully f
 These screenshots illustrate the MVP running locally with a functioning FastAPI service.
 
 ### 10.1 API Server Running
-![API server running](./images/api_running.png)
+![API server running](images/server_running.png)
 
-### 10.2 Health Endpoint Response
-![Health check response](./images/health_check.png)
+### 10.2 Health Endpoint Response (cURL)
+![Health check response](images/01_health_check_curl.png)
 
 ### 10.3 Directory Structure (Project Tree)
-![Project directory tree](./images/project_tree.png)
+![Project directory tree](images/02_project_tree_structure.png)
 
-These visuals confirm the operational backbone of the system (routing, logging, environment setup).
+### 10.4 Uvicorn Server Running (Startup Logs)
+![Uvicorn server running](images/03_uvicorn_server_running.png)
+
+These visuals confirm the operational backbone of the system  
+(routing, logging, environment setup, and server initialization).
 
 ---
 
