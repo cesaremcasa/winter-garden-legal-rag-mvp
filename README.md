@@ -170,38 +170,59 @@ Functional components intentionally remain unimplemented:
 This design ensures the project is safe for public portfolio use while highlighting real engineering practices.
 
 ---
+---
 
 ## 9. Roadmap (Production Path)
 
-### Document ingestion
-- Extract text from PDFs (pdfplumber / PyPDF2)
-- Parse HTML (BeautifulSoup)
-- Implement chunking (size + overlap)
+This MVP is structured so each subsystem can be expanded independently.  
+Below is the planned evolution path for turning this architecture into a fully functional legal RAG backend.
 
-### Retrieval
-- Generate embeddings (sentence-transformers)
-- Build FAISS index
-- Implement BM25
-- Hybrid fusion (RRF, weighted sum)
+### Document Ingestion
+- Implement PDF text extraction (pdfplumber / PyPDF2)
+- Add HTML parsing (BeautifulSoup)
+- Introduce text chunking with size + overlap control
+
+### Retrieval Layer
+- Generate embeddings with sentence-transformers
+- Build FAISS index for dense retrieval
+- Implement BM25 for sparse retrieval
+- Add hybrid fusion (RRF, weighted / score-based ranking)
 
 ### LLM Integration
-- Connect to OpenAI/Anthropic
-- Build RAG prompts
-- Generate answers w/ citations
+- Connect LLMClient to OpenAI / Anthropic / local models
+- Create RAG-oriented prompt templates
+- Produce answers with citation mapping
 
-### Validation
-- Citation verification  
-- Hallucination detection  
-- Confidence scoring  
+### Validation Layer
+- Implement citation grounding checks
+- Add confidence scoring
+- Introduce hallucination detection
 
 ### Observability + Testing
-- Metrics  
-- Tracing  
-- Integration tests  
-- Stress tests  
+- Extend API + retrieval telemetry
+- Add metrics (latency, index hit ratios)
+- Implement integration + stress tests
+- Expand automated QA coverage
 
 ---
 
-## 10. License
+## 10. Screenshots (MVP Runtime Preview)
+
+These screenshots illustrate the MVP running locally with a functioning FastAPI service.
+
+### 10.1 API Server Running
+![API server running](./images/api_running.png)
+
+### 10.2 Health Endpoint Response
+![Health check response](./images/health_check.png)
+
+### 10.3 Directory Structure (Project Tree)
+![Project directory tree](./images/project_tree.png)
+
+These visuals confirm the operational backbone of the system (routing, logging, environment setup).
+
+---
+
+## 11. License
 
 MIT License
