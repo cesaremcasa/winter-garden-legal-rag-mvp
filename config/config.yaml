@@ -1,0 +1,26 @@
+# Data paths
+data_path: "./data/raw_pdfs/"
+processed_path: "./data/processed/"
+index_path: "./data/index/"
+
+# Index configurations
+faiss_index_path: "./data/index/faiss/"
+bm25_index_path: "./data/index/bm25/"
+chroma_db_path: "./data/chroma_db/"
+
+# Model configuration
+embedding_model_name: "all-MiniLM-L6-v2"
+llm_model_name: "gpt-4o-mini"
+temperature: 0.1
+
+# Retrieval configuration
+top_k: 5
+chunk_size: 500
+chunk_overlap: 50
+
+# API configuration
+port: 8000
+host: "0.0.0.0"
+
+# Logging
+log_level: "INFO"
